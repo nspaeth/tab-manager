@@ -1,0 +1,14 @@
+{
+  "background": {
+    "scripts": [
+      "browser-polyfill.js",
+      "background.js"
+    ]
+  },
+  "content_scripts": [{
+    "js": [
+      "browser-polyfill.js",
+      "content.js"
+    ]
+  }]
+}

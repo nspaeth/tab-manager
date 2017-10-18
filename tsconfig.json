@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "outDir": "build",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "pretty": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "experimentalDecorators": true,
+    "baseUrl": "./src",
+    "moduleResolution": "node",
+    "noEmitHelpers": true,
+    "importHelpers": true,
+    "lib": [ "dom", "es2017" ],
+		"allowSyntheticDefaultImports": true,
+		"paths": {
+			"~/*": ["*"]
+		},
+		"typeRoots": ["@types", "node_modules/web-ext-types"]
+  },
+	"typingOptions": {
+    "enableAutoDiscovery": true
+	},
+	"filesGlob": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "fuse.ts"
+  ]
+}
