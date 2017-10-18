@@ -14,7 +14,7 @@ Conversations between these groups often goes something like this:
 
 I open a lot of tabs; probably 90% of all links I open are in new tabs (todo: report this?). I keep tabs open until I am done with them; either I solved whatever problem they were opened for, or I've sufficiently digested their content. As someone who has many interests and simultaneous projects, this leads to a large number of tabs.
 
-** You're insane, have you heard of bookmarks? **
+**You're insane, have you heard of bookmarks?**
 
 Bookmarks are where tabs to go to never be seen again. They require discipline to keep organized. Bookmarks grow forever without manual intervention via a clumsy interface.
 
@@ -28,7 +28,7 @@ While bookmarks live forever unless you actively slog through and cull them, tab
 
 Tabs serve as a todo list. While a tab is still open it serves as a constant reminder of things I want to work on or learn about.
 
-** How do you keep track of them all!? I'd have a panic attack! **
+**How do you keep track of them all!? I'd have a panic attack!**
 
 A combination of good memory, useful shortcuts, and some helpful extensions.
 * The Great Suspender helps keep resource usage down. This feature is getting built into browsers via the 'discarded' flag. Also, Firefox is getting very good at resource usage.
@@ -39,7 +39,7 @@ Despite these adaptations, my tabs are getting out of hand. Hence, this extensio
 ### Features ###
 * Windows and tabs are densely packed so that it is easy to get a birds eye view of all of them, which makes it easier to organize and trim.
 
-** How is this better, don't you still have to organize them? **
+**How is this better, don't you still have to organize them?**
 
 For now, but a feature currently in development will allow them to automatically be re-arranged by topic by looking at the contents of the tabs. This will likely be the most distinguishing and important feature.
 
