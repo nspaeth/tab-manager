@@ -7,7 +7,7 @@
     "test": "ts-node fuse test",
     "build": "yarn prebuild && ts-node fuse",
     "prebuild": "yarn cache clean && yarn install",
-    "dev": "yarn prebuild && ts-node fuse -- -d",
+    "dev": "yarn prebuild && ts-node fuse -d",
     "debug": "yarn prebuild && ts-node --inspect-brk fuse -d",
     "luis": "ts-node fuse luis",
     "format": "tsfmt -r && tslint --project . --fix"
