@@ -11,25 +11,32 @@ type IState = ITab
 
 export type Reducer = (prev: IState) => IState // | undefined
 export type Sources = IDriverSources & { onion: StateSource<IState> }
-export type Sinks = DriverSinks // & { onion: Stream<Reducer> }
+export type Sinks = DriverSinks & { onion: Stream<Reducer> }
 
 export function main(sources: Sources): Sinks {
 	const intent$ = intent(sources)
 	return {
 		DOM: view(sources),
 		messages: intent$.messages,
+		onion: xs.of((state: any) => state),
 	}
 }
 
 type EventType = [any, ITab]
-function intent(sources: Sources): Sinks {
+function intent(sources: Sources) {
 	const closeClick$ = sources.DOM.select('.close').events('click')
 		.compose(sampleCombine(sources.onion.state$))
 	const dblClick$ = sources.DOM.select('.tab').events('dblclick')
 		.compose(sampleCombine(sources.onion.state$))
 
+	const mouseDown$ = xs.merge(
+		sources.DOM.select('.tab').events('pointerdown'),
+		sources.DOM.select('.tab').events('mousedown'),
+	)
+
 	return {
 		messages: xs.merge(
+			mouseDown$.map(() => console.log('down!') || ({type: 'none', payload: 'non'}) ),
 			dblClick$
 				.map(([_, { id }]: EventType) =>
 					newMessage(['tabs', 'update'], [id, { active: true }])),

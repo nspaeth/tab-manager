@@ -26,6 +26,7 @@ const Windows = makeCollection({
 	collectSinks: (instances: any) => ({
 		DOM: instances.pickCombine('DOM'),
 		messages: instances.pickMerge('messages'),
+		onion: instances.pickMerge('onion'),
 	}),
 })
 
@@ -38,13 +39,14 @@ const searchLens = {
 		state.search ? state.windows.map(
 			window => ({
 				...window,
-				tabs: window.tabs.filter(
-					tab =>
-						(tab.title || '').toLowerCase().includes(state.search)
-						|| tab.url.toLowerCase().includes(state.search),
-				),
+				// tabs: window.tabs.filter(
+				// 	tab =>
+				// 		(tab.title || '').toLowerCase().includes(state.search)
+				// 		|| tab.url.toLowerCase().includes(state.search),
+				// ),
 			}))
-			.filter(window => window.tabs.length)
+		.filter(window => window.tabs.find(tab => (tab.title || '').toLowerCase().includes(state.search)))
+			// .filter(window => window.tabs.length)
 			: state.windows,
 	set: (state: IState, childState: IWindow[]): IState => state, // ignore updates
 }
@@ -56,6 +58,7 @@ export function Home(sources: Sources): Sinks {
 	const message$ = xs.merge(intent$.messages, windows$.messages as Stream<IMessage>)
 	const onion$ = xs.merge(
 		intent$.onion,
+		windows$.onion as Stream<Reducer>,
 		pickType(sources.messages, 'state_changed')
 			.map((payload: any) => (prevState: IState):
 				IState => ({

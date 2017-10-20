@@ -11,29 +11,37 @@ type IState = IWindow
 
 export type Reducer = (prev: IState) => IState// | undefined
 export type Sources = IDriverSources & { onion: StateSource<IState> }
-export type Sinks = DriverSinks // & { onion: Stream<Reducer> }
+export type Sinks = DriverSinks & { onion: Stream<Reducer> }
 
-// import { makeSortable } from 'cyclejs-sortable'
-
-const makeTabs = (DOM: any) => makeCollection({
+import { makeSortable } from 'cyclejs-sortable'
+import debounce from 'xstream/extra/debounce'
+const makeTabs = (sources: Sources) => makeCollection({
 	item: Tab,
-	itemKey: (state: ITab) => state.id.toString(),
-	itemScope: (key: any) => key,
+	itemKey: (childState: ITab, index: number) => childState.id.toString(),
+	itemScope: (key: any) => '._' + key, // + Math.round((Math.random() * 100000)),
 	collectSinks: (instances: any) => ({
-		DOM: instances.pickCombine('DOM'),
+		DOM: instances.pickCombine('DOM')
 		// TODO: this makes updates very slow and doesn't work anyway
-		// .map(itemVNodes => div(itemVNodes)).compose(makeSortable(DOM)),
+			.compose(debounce(100))
+			.map((itemVNodes: any) => div('.tabs', {style: {position: 'relative'}}, itemVNodes))
+			.compose(makeSortable(sources.DOM, {
+				handle: '.tab',
+				parentSelector: '.tabs',
+				selectionDelay: 250,
+			})),
 		messages: instances.pickMerge('messages'),
+			onion: instances.pickMerge('onion'),
 	}),
 })
 
 export function main(sources: Sources): Sinks {
-	const tab$ = isolate(makeTabs(sources.DOM), 'tabs')(sources)
+	const tab$ = isolate(makeTabs(sources), 'tabs')(sources)
 	const intent$ = intent(sources)
 
 	return {
 		DOM: view(sources, tab$.DOM),
 		messages: xs.merge(intent$.messages, tab$.messages as Stream<IMessage>),
+		onion: tab$.onion as Stream<Reducer>,
 	}
 }
 
