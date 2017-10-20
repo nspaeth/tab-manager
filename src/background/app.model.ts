@@ -51,7 +51,7 @@ export const appReducers: IReducerFactoryMap = {
 	destroyTab: tabId => (prevState: IState): IState => {
 		const oldWindow: IWindow = find(
 			prevState.windows,
-			(window: IWindow) => window.tabs!.find((tab: ITab) => tab.id === tabId),
+			(window: IWindow) => window.tabs.find((tab: ITab) => tab.id === tabId),
 		)
 
 		if (!oldWindow) { return prevState } // TODO: can this happen? is this an error?

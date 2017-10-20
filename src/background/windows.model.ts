@@ -16,7 +16,7 @@ export const windowReducers: IReducerFactoryMap = {
 	onCreated: (window: browser.windows.Window) => (prevState: IState): IState => {
 		const newWindow = MetafyWindow(window)
 		const isRestoring = newWindow.tabs
-			.find(tab => !!(tab!.url.match('' + extensionUrl + '(.*?)/')))
+			.find(tab => !!(tab.url.match('' + extensionUrl + '(.*?)/')))
 
 		if (isRestoring) {
 			const match = urlMatcher.exec(newWindow.tabs[0].url)

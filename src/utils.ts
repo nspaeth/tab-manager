@@ -35,7 +35,7 @@ export function MetafyWindow(window: browser.windows.Window): IWindow {
 	return merge(
 		{ meta: { status: 'active' } },
 		window,
-		{ tabs: window.tabs!.map(MetafyTab) },
+		{ tabs: (window.tabs || []).map(MetafyTab) },
 	)
 }
 

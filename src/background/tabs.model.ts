@@ -31,7 +31,7 @@ export const tabReducers: IReducerFactoryMap = {
 					[oldWindow.id]: {
 						...oldWindow,
 						tabs: reindexTabs(
-							oldWindow.tabs!.map(
+							oldWindow.tabs.map(
 								(tab: ITab) => ({ ...tab, active: activateInfo.tabId === tab.id }),
 							)),
 					},
@@ -49,7 +49,7 @@ export const tabReducers: IReducerFactoryMap = {
 					[oldWindow.id]: {
 						...oldWindow,
 						tabs: reindexTabs(
-							oldWindow.tabs!.map(
+							oldWindow.tabs.map(
 								(tab: ITab) => ({ ...tab, highlighted: highlightedTabInfo.tabIds.includes(tab.id) }),
 							)),
 					},
@@ -59,11 +59,11 @@ export const tabReducers: IReducerFactoryMap = {
 	onRemoved: (tabId: number) => (prevState: IState): IState => {
 		const oldWindow: IWindow = find(
 			prevState.windows,
-			(window: IWindow) => window.tabs!.find((tab: ITab) => tab.id === tabId),
+			(window: IWindow) => window.tabs.find((tab: ITab) => tab.id === tabId),
 		)
 
 		if (!oldWindow) { return prevState } // TODO: can this happen? is this an error?
-		const tabs = reindexTabs(oldWindow.tabs!.reduce(
+		const tabs = reindexTabs(oldWindow.tabs.reduce(
 			(acc: ITab[], tab: ITab) =>
 				(tab.id === tabId
 					? (tab.meta.status === 'saved' ? [...acc, { ...tab, id: randomId() }] : acc)
@@ -91,7 +91,7 @@ export const tabReducers: IReducerFactoryMap = {
 					...prevState.windows,
 					[updatedTab.windowId]: {
 						...window,
-						tabs: reindexTabs(window.tabs!.map(
+						tabs: reindexTabs(window.tabs.map(
 							(tab: ITab) => tab.id === updated.id ? updated : tab,
 						)),
 					},
@@ -101,7 +101,7 @@ export const tabReducers: IReducerFactoryMap = {
 	onAttached: (tabId, attachInfo) => (prevState: IState): IState => {
 		const oldWindow = find(prevState.windows,
 			(window: IWindow) =>
-				!!window.tabs!.find((x: ITab) => x.id === tabId),
+				!!window.tabs.find((x: ITab) => x.id === tabId),
 		)
 		if (!oldWindow) { return prevState }
 		const tab: ITab = find(oldWindow.tabs, (x: ITab) => x.id === tabId)
@@ -126,8 +126,8 @@ export const tabReducers: IReducerFactoryMap = {
 
 		const detachedWindow = {
 			...oldWindow,
-			tabs: reindexTabs(oldWindow.tabs!.filter((tab: ITab) => tab.id !== tabId)),
-			// tabs: reindexTabs(oldWindow.tabs!.filter(
+			tabs: reindexTabs(oldWindow.tabs.filter((tab: ITab) => tab.id !== tabId)),
+			// tabs: reindexTabs(oldWindow.tabs.filter(
 			// 	(tab: ITab) => tab.id !== tabId || tab.status === 'saved')),
 		}
 

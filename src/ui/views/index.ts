@@ -38,10 +38,10 @@ const searchLens = {
 		state.search ? state.windows.map(
 			window => ({
 				...window,
-				tabs: window.tabs!.filter(
+				tabs: window.tabs.filter(
 					tab =>
-						tab.title!.toLowerCase().includes(state.search)
-						|| tab.url!.toLowerCase().includes(state.search),
+						(tab.title || '').toLowerCase().includes(state.search)
+						|| tab.url.toLowerCase().includes(state.search),
 				),
 			}))
 			.filter(window => window.tabs.length)
