@@ -20,22 +20,22 @@ const makeTabs = (sources: Sources) => makeCollection({
 	itemKey: (childState: ITab, index: number) => childState.id.toString(),
 	itemScope: (key: any) => '._' + key, // + Math.round((Math.random() * 100000)),
 	collectSinks: (instances: any) => ({
-		DOM: instances.pickCombine('DOM')
-		// TODO: this makes updates very slow and doesn't work anyway
-			.compose(debounce(100))
-			.map((itemVNodes: any) => div('.tabs', {style: {position: 'relative'}}, itemVNodes))
-			.compose(makeSortable(sources.DOM, {
-				handle: '.tab',
-				parentSelector: '.tabs',
-				selectionDelay: 250,
-			})),
+		DOM: instances.pickCombine('DOM'),
+		// // TODO: this makes updates very slow and doesn't work anyway
+		// 	.compose(debounce(20))
+		// 	.map((itemVNodes: any) => div('.tabs', {style: {position: 'relative'}}, itemVNodes))
+		// 	.compose(makeSortable(sources.DOM, {
+		// 		handle: '.tab',
+		// 		parentSelector: '.tabs',
+		// 		selectionDelay: 250,
+		// 	})),
 		messages: instances.pickMerge('messages'),
 			onion: instances.pickMerge('onion'),
 	}),
-})
+})(sources)
 
 export function main(sources: Sources): Sinks {
-	const tab$ = isolate(makeTabs(sources), 'tabs')(sources)
+  const tab$ = isolate(makeTabs, 'tabs')(sources)
 	const intent$ = intent(sources)
 
 	return {
