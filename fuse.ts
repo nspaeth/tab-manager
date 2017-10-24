@@ -42,6 +42,9 @@ function makeConfig(options: any = {}) {
 		hash: false,
 		runAllMatchedPlugins: true,
 		warnings: true,
+    alias: {
+      'stream': 'stream-browserify',
+    },
 		plugins: [
 			JSONPlugin(),
 			(ReplacePlugin as any)(replacements),
@@ -168,9 +171,6 @@ Sparky.task('luis', () => {
       crypto: {
         exports: '{ randomBytes: () => crypto.getRandomValues(new global.Uint16Array(1))[0] }'
       },
-      stream: {
-        exports: '{ Writable: function() {}, Readable: function() {}, Transform: function() {} }'
-      }
     }
   });
 

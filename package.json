@@ -42,6 +42,7 @@
     "cyclejs-sortable": "^2.4.0",
     "lodash": "^4.17.4",
     "lz-string": "^1.4.4",
+    "stream-browserify": "^2.0.1",
     "typescript": "2.6.0-rc",
     "typestyle": "^1.4.2",
     "webextension-polyfill": "0.1.1"
