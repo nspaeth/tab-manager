@@ -13,7 +13,7 @@ export type Reducer = (prev: IState) => IState// | undefined
 export type Sources = IDriverSources & { onion: StateSource<IState> }
 export type Sinks = DriverSinks & { onion: Stream<Reducer> }
 
-import { makeSortable } from 'cyclejs-sortable'
+import { getUpdateEvent, makeSortable } from 'cyclejs-sortable'
 import debounce from 'xstream/extra/debounce'
 const makeTabs = (sources: Sources) => makeCollection({
 	item: Tab,
@@ -75,28 +75,31 @@ function intent(sources: Sources) {
 		),
 	}
 }
+
 // the grid is created with the Tab as the standard unit
 // each window is the height of the contained tabs +
 // the height of any extra chrome
 // currently, title(1) + new tab button(1) + padding/margin (1) +
-//
 const extraWindowSpacing = 4 // # of tab heights
-
 import { attrs } from '../utils'
 
 import { newTabS, TabContainerS, WindowControlsS, WindowHeaderS, WindowS } from './styles'
 function view(sources: Sources, tabDOM$: Stream<VNode>): Stream<VNode> {
 	const window$ = sources.onion.state$
+	const tabMoved$ = getUpdateEvent(sources.DOM, '.tabs')
+		.debug('sorts')
+		.map(update => 'moved')
+		.startWith('')
 
-	return xs.combine(window$, tabDOM$).map(
-		([window, tabs]) => div(`.${WindowS}`, {
+	return xs.combine(window$, tabDOM$, tabMoved$).map(
+		([window, tabs, update]) => div(`.${WindowS}.window`, {
 			style: {
 				'grid-row': `auto / span ${(window.tabs.length + extraWindowSpacing)}`,
 				...(window.focused ? { 'background-color': 'salmon' } : {}),
 			},
 		}, [
 				div(`.${WindowHeaderS}`, [
-					window.id,
+					window.id, tabMoved$,
 					`(${window.tabs.length})`,
 					div(`.${WindowControlsS}`, [
 						window.meta.status === 'saved'
