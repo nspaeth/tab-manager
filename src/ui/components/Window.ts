@@ -18,17 +18,17 @@ import debounce from 'xstream/extra/debounce'
 const makeTabs = (sources: Sources) => makeCollection({
 	item: Tab,
 	itemKey: (childState: ITab, index: number) => childState.id.toString(),
-	itemScope: (key: any) => '._' + key, // + Math.round((Math.random() * 100000)),
+	itemScope: (key: any) => '._' + key,
 	collectSinks: (instances: any) => ({
-		DOM: instances.pickCombine('DOM'),
-		// // TODO: this makes updates very slow and doesn't work anyway
-		// 	.compose(debounce(20))
-		// 	.map((itemVNodes: any) => div('.tabs', {style: {position: 'relative'}}, itemVNodes))
-		// 	.compose(makeSortable(sources.DOM, {
-		// 		handle: '.tab',
-		// 		parentSelector: '.tabs',
-		// 		selectionDelay: 250,
-		// 	})),
+		DOM: instances.pickCombine('DOM')
+			// Is debounce the best way to speed this up? It seems like makeSortable should be faster
+			.compose(debounce(20))
+			.map((itemVNodes: any) => div('.tabs', {style: {position: 'relative'}}, itemVNodes))
+			.compose(makeSortable(sources.DOM, {
+				handle: '.tab',
+				parentSelector: '.tabs',
+				selectionDelay: 100,
+			})),
 		messages: instances.pickMerge('messages'),
 			onion: instances.pickMerge('onion'),
 	}),

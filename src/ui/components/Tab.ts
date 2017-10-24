@@ -29,14 +29,11 @@ function intent(sources: Sources) {
 	const dblClick$ = sources.DOM.select('.tab').events('dblclick')
 		.compose(sampleCombine(sources.onion.state$))
 
-	const mouseDown$ = xs.merge(
-		sources.DOM.select('.tab').events('pointerdown'),
-		sources.DOM.select('.tab').events('mousedown'),
-	)
+	const mouseDown$ = sources.DOM.select('.tab').events('mousedown')
 
 	return {
 		messages: xs.merge(
-			mouseDown$.map(() => console.log('down!') || ({type: 'none', payload: 'non'}) ),
+			mouseDown$.debug('down!').map(() => ({type: 'none', payload: 'none'})),
 			dblClick$
 				.map(([_, { id }]: EventType) =>
 					newMessage(['tabs', 'update'], [id, { active: true }])),
@@ -60,6 +57,7 @@ function view(sources: Sources): Stream<VNode> {
 	const tab$ = sources.onion.state$
 	return tab$.map(
 		tab =>
+			div([
 			div(`.tab.${tabS}`, {
 				attrs: { title: tab.title },
 				style: tab.active ? { 'background-color': 'lightblue' } : {},
@@ -73,5 +71,7 @@ function view(sources: Sources): Stream<VNode> {
 						div(`.${tabControlsS}`, [span('.close', attrs({ title: 'Close Tab' }), ['X'])]),
 						tab.title,
 					]),
-				]))
+				]),
+			]),
+	)
 }
