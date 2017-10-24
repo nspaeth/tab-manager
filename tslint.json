@@ -39,6 +39,7 @@
     "arrow-return-shorthand": [true, "multiline"],
 		"arrow-parens": [true, "ban-single-arg-parens"],
     "no-duplicate-variable": true,
+		"no-implicit-dependencies": [true, "dev"],
     "no-inferrable-types": [true, "ignore-params"],
     "no-var-keyword": true,
     "variable-name": [
