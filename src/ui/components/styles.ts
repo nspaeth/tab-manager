@@ -4,6 +4,7 @@ const tabS = style({
 	whiteSpace: 'nowrap',
 	overflow: 'hidden',
 	padding: '0.2em',
+	position: 'relative',
 })
 
 const faviconS = style({
@@ -24,7 +25,10 @@ const tabControlsS = style({
 	float: 'right',
 	backgroundColor: 'lightgrey',
 	// make sure the controls are clickable (ie, above the tab)
-	position: 'relative',
+		position: 'absolute',
+		right: '5px',
+		top: '50%',
+		transform: 'translateY(-50%)',
 	zIndex: 100,
 })
 

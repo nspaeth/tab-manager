@@ -62,13 +62,13 @@ function view(sources: Sources): Stream<VNode> {
 				attrs: { title: tab.title },
 				style: tab.active ? { 'background-color': 'lightblue' } : {},
 			}, [
+					div(`.${tabControlsS}`, [span('.close', attrs({ title: 'Close Tab' }), ['X'])]),
 					div(`.${FavIconBoxS}`, [
 						img(`.${faviconS}`, {
 							attrs: { src: tab.favIconUrl },
 						}),
 					]),
 					div(`.${TabTitleS}`, [
-						div(`.${tabControlsS}`, [span('.close', attrs({ title: 'Close Tab' }), ['X'])]),
 						tab.title,
 					]),
 				]),

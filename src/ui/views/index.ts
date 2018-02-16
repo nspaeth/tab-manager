@@ -104,7 +104,7 @@ function view(sources: Sources, windowsDOM$: Stream<VNode>): Stream<VNode> {
 
 	return xs.combine(count$, header$, state$, windowsDOM$).map(
 		([count, header, state, windowsDOM]: any) =>
-			div([
+			div({style: { fontFamily: 'sans-serif' }}, [
 				div([
 					input('.search', { attrs: { type: 'text', autofocus: true } }),
 					'canary', button('.increment', ['increment']), count,
