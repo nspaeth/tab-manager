@@ -84,19 +84,33 @@ export const tabReducers: IReducerFactoryMap = {
 	onUpdated: (tabId: number, changeInfo: Partial<ITab>, updatedTab: ITab) =>
 		(prevState: IState): IState => {
 			const window = prevState.windows[updatedTab.windowId]
-			const updated = MetafyTab(updatedTab)
-			return {
-				...prevState,
-				windows: {
-					...prevState.windows,
-					[updatedTab.windowId]: {
-						...window,
-						tabs: reindexTabs(window.tabs.map(
-							(tab: ITab) => tab.id === updated.id ? updated : tab,
-						)),
-					},
-				},
+			if (!window) {
+				console.warn(`Window doesn't exist in 'onUpdated', state unchanged.`)
+				console.log(`Tab is: ${updatedTab.title}`)
+				console.log({prevState, window, updated, updatedTab})
+				return prevState
 			}
+			const updated = MetafyTab(updatedTab)
+
+			console.log({prevState, window, updated, updatedTab})
+			let ret
+			try {
+				ret =  {
+					...prevState,
+					windows: {
+						...prevState.windows,
+						[updatedTab.windowId]: {
+							...window,
+							tabs: reindexTabs(window.tabs.map(
+								(tab: ITab) => tab.id === updated.id ? updated : tab,
+							)),
+						},
+					},
+				}
+			} catch (e) {
+				console.warn(e)
+			}
+			return ret as any
 		},
 	onAttached: (tabId, attachInfo) => (prevState: IState): IState => {
 		const oldWindow = find(prevState.windows,

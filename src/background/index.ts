@@ -14,7 +14,9 @@ const left = Math.round((window.screen.availWidth - width) / 2)
 const top = Math.round((window.screen.availHeight - height) / 2)
 
 function showSwitcher() {
-	browser.windows.create({ url: scriptUrl, focused: true, type: 'popup', width, height, left, top })
+	// `focuses: true` not supported on firefox but might be useful to make sure
+	// that the window opens in focus every time
+	browser.windows.create({ url: scriptUrl, type: 'popup', width, height, left, top })
 }
 
 interface IState {
