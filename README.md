@@ -60,6 +60,10 @@ Currently, the default key-binding for opening the extension is `Ctrl-Shift-Peri
 * Consider making different tab/window types based on 'saved' status so that typechecking catches errors instead of testing
 * Add type info to Messages so that they can be properly type checked instead of being `any`.
 * Test in Firefox
+  * cycle-web-extensions: firefox doesn't support some events
+  * window grids need overflow: hidden; (Or something? right controls (eg, close button) are wrapping)
+  * better default font
+  * FavIcons don't work
 * Create a cyclejs font icon component library like `react-fa` to make icons in apps easier.
 * Create pull request for Typescript typing of `parseInt`: should accept `string | number`, not just `string`?
 * Features
