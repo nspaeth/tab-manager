@@ -45,6 +45,10 @@ function makeConfig(options: any = {}) {
     alias: {
       'stream': 'stream-browserify',
     },
+    shim: {
+      fs: {exports: '{existsSync: ()=>false}'},
+      'webworker-threads': { exports: '{}' },
+    },
 		plugins: [
 			JSONPlugin(),
 			(ReplacePlugin as any)(replacements),
@@ -64,7 +68,7 @@ function makeConfig(options: any = {}) {
 				bakeApiIntoBundle: 'vendor-ui',
 				manifest: true,
 				treeshake: true,
-				uglify: !__IS_DEV__,
+				uglify: false, // !__IS_DEV__,
 				target: 'browser',
 			}),
 		],
@@ -171,6 +175,8 @@ Sparky.task('luis', () => {
       crypto: {
         exports: '{ randomBytes: () => crypto.getRandomValues(new global.Uint16Array(1))[0] }'
       },
+      fs: {exports: '{existsSync: ()=>false}'},
+      'webworker-threads': { exports: null },
     }
   });
 

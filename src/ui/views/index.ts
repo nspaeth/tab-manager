@@ -75,9 +75,76 @@ export function Home(sources: Sources): Sinks {
 	}
 }
 
+const chunk = require('lodash/chunk')
+export function createWindow(tabs: ITab[],
+                             windowId: number | string = 1,
+                             meta: IMeta = { status: 'active' },
+                            ): IWindow {
+	const id = parseInt(windowId as string)
+	let tabsArray = tabs
+
+	return {
+		id: windowId, meta, tabs,
+		incognito: false,
+		focused: false,
+		alwaysOnTop: false,
+	}
+}
+
+import { BagOfWords, CRP } from 'chinese-restaurant-process'
+
+const natural = require('natural')
+natural.PorterStemmer.attach()
+
+function clusterTabs(tabs: ITab[]) {
+  const crp = new CRP(0.1, .15)
+  crp.addDocsToCorpus(
+    tabs.map((tab) => ({ data: tab, bag: new BagOfWords(tab.title.tokenizeAndStem()) }))
+  )
+  crp.cluster(100)
+  const IDFs = crp.calcIDFs()
+  crp.tables.filter(table => table)
+    .map(table => table.calcTF_IDF(IDFs))
+
+  crp.tables.filter(table => table)
+    .map(table => ({
+	    titles: Object.keys(table.docs)
+        .map(idx => table.docs[idx].text), // docs: table.docs,
+	    terms: table.topNTerms(5),
+	    //	tf_idf: table.TF_IDF
+    }))
+  return crp.tables.filter(table => table)
+}
+
 function intent(DOM: DOMSource) {
 	const newWindow$ = DOM.select('.newWindow').events('click')
 		.mapTo(newMessage(['windows', 'create']))
+
+	const regroup$ = DOM.select('.regroup').events('click')
+		.map(
+			() =>
+				(prevState: IState) =>
+				({
+					...prevState,
+					windows: clusterTabs(
+            ([] as ITab[]).concat(
+              ...prevState.windows
+                .map(window => window.tabs)
+            )
+          )
+          // chunk(([] as ITab[])
+          //       .concat(
+          //         ...prevState.windows
+          //           .map(window => window.tabs)), 10)
+            .map((tabs: any[], index: number) =>
+                 createWindow(
+                   Array.from(tabs.docs.values()).map(tab => tab.data),
+                   index,
+                   { status: 'active', keywords: tabs.topNTerms(5) }
+                 )),
+				}),
+		)
+	// .mapTo(newMessage(['app', 'regroup']))
 
 	const increment$ = DOM.select('.increment').events('click')
 		.mapTo(newMessage(['app', 'increment']))
@@ -85,11 +152,14 @@ function intent(DOM: DOMSource) {
 
 	return {
 		messages: xs.merge(newWindow$, increment$),
-		onion: DOM.select('.search').events('input').map(
+		onion: xs.merge(
+      DOM.select('.search').events('input').map(
 			({ target }: any) =>
 				(prevState: IState): IState =>
 					({ ...prevState, search: target.value && target.value.toLowerCase() }),
 		),
+      regroup$,
+    )
 	}
 }
 
@@ -109,6 +179,7 @@ function view(sources: Sources, windowsDOM$: Stream<VNode>): Stream<VNode> {
 					'canary', button('.increment', ['increment']), count,
 					button('.newWindow', ['New Window']),
 					header,
+					button('.regroup', ['Regroup tabs']),
 				]),
 				// createBackupLink(state),
 				div({

@@ -3,19 +3,18 @@ import { randomId, reindexTabs } from './utils'
 
 const find = require('lodash/find')
 const omit = require('lodash/omit')
-
+// type saved = 'saved'
 export const appReducers: IReducerFactoryMap = {
 	saveWindow: windowId => (prevState: IState): IState => {
-		// const uuid = uuidv4()
 		const window = prevState.windows[windowId]
 		if (!window) { return prevState }
 
 		const uuid = randomId()
+		// const savedWindow: IWindow<saved> = {
 		const savedWindow = {
 			...window,
 			id: uuid,
 			meta: { status: 'saved' },
-			// id: uuid,
 			// also save tabs:
 			tabs: window.tabs.map((tab: ITab) => ({ ...tab, windowId: uuid, meta: { status: 'saved' } })),
 		}

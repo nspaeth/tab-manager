@@ -105,8 +105,8 @@ function view(sources: Sources, tabDOM$: Stream<VNode>): Stream<VNode> {
 			},
 		}, [
 				div(`.${WindowHeaderS}`, [
-					window.id, tabMoved$,
-					`(${window.tabs.length})`,
+				window.id, `(${window.tabs.length})`,
+				window.meta.keywords && window.meta.keywords.join(', '),
 					div(`.${WindowControlsS}`, [
 						window.meta.status === 'saved'
 							? span('.restore', attrs({ title: 'Restore this window' }), ['O'])

@@ -18,13 +18,15 @@ import { IMessage } from 'cycle-web-extensions'
 export type MessageType = string // 'app' | 'tabs' | 'windows'
 export type IMessage = IMessage
 
-export interface IMeta {
-	status: 'saved' | 'active'
+export type statuses = 'saved' | 'active'
+export interface IMeta<Status = statuses> {
+	status: Status
+	keywords?: string[]
 }
 
-export type ITab = Dissoc<browser.tabs.Tab, 'id' | 'url'> & {
+export type ITab<Status = statuses> = Dissoc<browser.tabs.Tab, 'id' | 'url'> & {
 	id: string | number
-	meta: IMeta
+	meta: IMeta<Status>
 	url: string,
 }
 
@@ -32,8 +34,8 @@ export type ITab = Dissoc<browser.tabs.Tab, 'id' | 'url'> & {
 // TODO: meta should always be merged, not replaced
 // type Window = browser.windows.Window
 
-export type IWindow = Dissoc<browser.windows.Window, 'id' | 'tabs'> & {
+export type IWindow<Status = statuses> = Dissoc<browser.windows.Window, 'id' | 'tabs'> & {
 	id: string | number
-	tabs: ITab[]
-	meta: IMeta,
+	tabs: Array<ITab<Status>> // ITab<Status>[]
+	meta: IMeta<Status>,
 }
