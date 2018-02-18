@@ -3,6 +3,12 @@ import { appReducers } from '../app.model'
 import { createState, createWindow, isValidState } from './model.tests'
 
 export class AppModelTest {
+	public async 'should move tab within window'() {}
+	public async 'should move tab between 2 active windows'() {}
+	public async 'should move tab between 2 saved windows'() {}
+	public async 'should move tab from active window to saved window'() {}
+	public async 'should move tab from saved window to active window'() {}
+	public async 'should move tab from window to nothing creates new window'() {}
 	public async 'should save window and all tabs'() {
 		let prevState = createState([
 			createWindow(3, 200, { status: 'active' }),

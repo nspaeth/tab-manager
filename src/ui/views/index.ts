@@ -5,7 +5,7 @@ import xs, { Stream } from 'xstream'
 import { newMessage, pickType } from '../../utils'
 import { main as Header } from '../components/Header'
 import { main as Window } from '../components/Window'
-import { DriverSinks, IDriverSources, IMessage, IWindow } from '../interfaces'
+import { DriverSinks, IDriverSources, IMessage, IMeta, ITab, IWindow } from '../interfaces'
 
 export interface IState {
 	count: number
@@ -77,7 +77,6 @@ export function Home(sources: Sources): Sinks {
 
 function intent(DOM: DOMSource) {
 	const newWindow$ = DOM.select('.newWindow').events('click')
-		.debug('new Window clicked')
 		.mapTo(newMessage(['windows', 'create']))
 
 	const increment$ = DOM.select('.increment').events('click')

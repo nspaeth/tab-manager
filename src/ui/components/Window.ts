@@ -15,7 +15,8 @@ export type Sinks = DriverSinks & { onion: Stream<Reducer> }
 
 import { getUpdateEvent, makeSortable } from 'cyclejs-sortable'
 import debounce from 'xstream/extra/debounce'
-const makeTabs = (sources: Sources) => makeCollection({
+function makeTabs(sources: Sources) {
+	const collection = makeCollection({
 	item: Tab,
 	itemKey: (childState: ITab, index: number) => childState.id.toString(),
 	itemScope: (key: any) => '._' + key,
@@ -34,13 +35,22 @@ const makeTabs = (sources: Sources) => makeCollection({
 	}),
 })(sources)
 
+	const tabMoved$ = getUpdateEvent(sources.DOM, '.tabs')
+	return {
+		...collection,
+		tabMoved$,
+	}
+}
+
 export function main(sources: Sources): Sinks {
   const tab$ = isolate(makeTabs, 'tabs')(sources)
+	const tabMoved$ = tab$.tabMoved$.debug('tab moved')
+		.map(() => ({type: 'none', payload: 'none'})) as Stream<IMessage>
 	const intent$ = intent(sources)
 
 	return {
 		DOM: view(sources, tab$.DOM),
-		messages: xs.merge(intent$.messages, tab$.messages as Stream<IMessage>),
+		messages: xs.merge(intent$.messages, tab$.messages as Stream<IMessage>, tabMoved$),
 		onion: tab$.onion as Stream<Reducer>,
 	}
 }
@@ -86,13 +96,9 @@ import { attrs } from '../utils'
 import { newTabS, TabContainerS, WindowControlsS, WindowHeaderS, WindowS } from './styles'
 function view(sources: Sources, tabDOM$: Stream<VNode>): Stream<VNode> {
 	const window$ = sources.onion.state$
-	const tabMoved$ = getUpdateEvent(sources.DOM, '.tabs')
-		.debug('sorts')
-		.map(update => 'moved')
-		.startWith('')
 
-	return xs.combine(window$, tabDOM$, tabMoved$).map(
-		([window, tabs, update]) => div(`.${WindowS}.window`, {
+	return xs.combine(window$, tabDOM$).map(
+		([window, tabs]) => div(`.${WindowS}.window`, {
 			style: {
 				'grid-row': `auto / span ${(window.tabs.length + extraWindowSpacing)}`,
 				...(window.focused ? { 'background-color': 'salmon' } : {}),
