@@ -58,10 +58,10 @@ function view(sources: Sources): Stream<VNode> {
 	return tab$.map(
 		tab =>
 			div([
-			div(`.tab.${tabS}`, {
-				attrs: { title: tab.title },
-				style: tab.active ? { 'background-color': 'lightblue' } : {},
-			}, [
+				div(`.tab.${tabS}`, {
+					attrs: { title: tab.title },
+					style: tab.active ? { 'background-color': 'lightblue' } : {},
+				}, [
 					div(`.${FavIconBoxS}`, [
 						img(`.${faviconS}`, {
 							attrs: { src: tab.favIconUrl },

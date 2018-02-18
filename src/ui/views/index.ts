@@ -157,7 +157,7 @@ function intent(DOM: DOMSource) {
 			({ target }: any) =>
 				(prevState: IState): IState =>
 					({ ...prevState, search: target.value && target.value.toLowerCase() }),
-		),
+		  ),
       regroup$,
     )
 	}

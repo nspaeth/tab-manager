@@ -17,23 +17,23 @@ import { getUpdateEvent, makeSortable } from 'cyclejs-sortable'
 import debounce from 'xstream/extra/debounce'
 function makeTabs(sources: Sources) {
 	const collection = makeCollection({
-	item: Tab,
-	itemKey: (childState: ITab, index: number) => childState.id.toString(),
-	itemScope: (key: any) => '._' + key,
-	collectSinks: (instances: any) => ({
-		DOM: instances.pickCombine('DOM')
+		item: Tab,
+		itemKey: (childState: ITab, index: number) => childState.id.toString(),
+		itemScope: (key: any) => '._' + key,
+		collectSinks: (instances: any) => ({
+			DOM: instances.pickCombine('DOM')
 			// Is debounce the best way to speed this up? It seems like makeSortable should be faster
-			.compose(debounce(20))
-			.map((itemVNodes: any) => div('.tabs', {style: {position: 'relative'}}, itemVNodes))
-			.compose(makeSortable(sources.DOM, {
-				handle: '.tab',
-				parentSelector: '.tabs',
-				selectionDelay: 100,
-			})),
-		messages: instances.pickMerge('messages'),
+				.compose(debounce(20))
+				.map((itemVNodes: any) => div('.tabs', {style: {position: 'relative'}}, itemVNodes))
+				.compose(makeSortable(sources.DOM, {
+					handle: '.tab',
+					parentSelector: '.tabs',
+					selectionDelay: 100,
+				})),
+			messages: instances.pickMerge('messages'),
 			onion: instances.pickMerge('onion'),
-	}),
-})(sources)
+		}),
+	})(sources)
 
 	const tabMoved$ = getUpdateEvent(sources.DOM, '.tabs')
 	return {
@@ -43,10 +43,10 @@ function makeTabs(sources: Sources) {
 }
 
 export function main(sources: Sources): Sinks {
-  const tab$ = isolate(makeTabs, 'tabs')(sources)
+	const tab$ = isolate(makeTabs, 'tabs')(sources)
 	const tabMoved$ = tab$.tabMoved$.debug('tab moved')
 		.map(() => ({type: 'none', payload: 'none'})) as Stream<IMessage>
-	const intent$ = intent(sources)
+		const intent$ = intent(sources)
 
 	return {
 		DOM: view(sources, tab$.DOM),
@@ -72,7 +72,7 @@ function intent(sources: Sources) {
 			saveClick$.map(([_, { id }]: EventType) => newMessage(['windows', 'remove'], [id])),
 			xs.merge(
 				closeClick$
-					// close the window if it exists
+				// close the window if it exists
 					.filter(([_, { id, meta }]: EventType) => meta.status === 'active')
 					.map(([_, { id, meta }]: EventType) => newMessage(['windows', 'remove'], [id])),
 				closeClick$.map(
@@ -104,18 +104,18 @@ function view(sources: Sources, tabDOM$: Stream<VNode>): Stream<VNode> {
 				...(window.focused ? { 'background-color': 'salmon' } : {}),
 			},
 		}, [
-				div(`.${WindowHeaderS}`, [
+			div(`.${WindowHeaderS}`, [
 				window.id, `(${window.tabs.length})`,
 				window.meta.keywords && window.meta.keywords.join(', '),
-					div(`.${WindowControlsS}`, [
-						window.meta.status === 'saved'
-							? span('.restore', attrs({ title: 'Restore this window' }), ['O'])
-							: span('.save', attrs({ title: 'Save this window' }), ['o']),
-						span('.close', attrs({ title: 'Close Window (and all tabs)' }), ['X']),
-					]),
+				div(`.${WindowControlsS}`, [
+					window.meta.status === 'saved'
+						? span('.restore', attrs({ title: 'Restore this window' }), ['O'])
+						: span('.save', attrs({ title: 'Save this window' }), ['o']),
+					span('.close', attrs({ title: 'Close Window (and all tabs)' }), ['X']),
 				]),
-				div(`.${TabContainerS}`, tabs),
-				button(`.newTab.${newTabS}`, attrs({ title: 'New Tab' }), ['New Tab']),
 			]),
+			div(`.${TabContainerS}`, tabs),
+			button(`.newTab.${newTabS}`, attrs({ title: 'New Tab' }), ['New Tab']),
+		]),
 	)
 }
